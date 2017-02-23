@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.epay.epayApp.util;
 
 import java.security.InvalidKeyException;
@@ -18,7 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Aeon
+ * 
+ * @author Asad Ali
  *
  */
 public class SecurityUtils {

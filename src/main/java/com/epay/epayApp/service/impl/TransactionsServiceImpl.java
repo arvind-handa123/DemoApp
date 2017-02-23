@@ -147,7 +147,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 
 		}
 
-		TransactionHistory transactionHistory = updatTraxnHistory(currency, description, user, purchaseamount,
+		TransactionHistory transactionHistory = prepareTraxnHistory(currency, description, user, purchaseamount,
 				traxnType, transactionId, trxnDate, balanceAmount);
 		if (transactionHistory != null) {
 			try {
@@ -170,7 +170,8 @@ public class TransactionsServiceImpl implements TransactionsService {
 		return null;
 	}
 
-	private TransactionHistory updatTraxnHistory(Currency currency, String description, User user,
+	@Override
+	public TransactionHistory prepareTraxnHistory(Currency currency, String description, User user,
 			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount) {
 		TransactionHistory transactionHistory = new TransactionHistory();
 		transactionHistory.setAmountSpent(purchaseamount);

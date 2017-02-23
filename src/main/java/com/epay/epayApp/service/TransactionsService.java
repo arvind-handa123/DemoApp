@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
+import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.User;
 import com.epay.epayApp.entity.Account.Currency;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
@@ -30,5 +31,8 @@ public interface TransactionsService {
 
 	Account CreateOrUpdateAccount(Currency currency, String description, User user, double balanceAmount,
 			TraxnType traxnType, String transactionId, Date trxnDate, Account userAccount);
+
+	TransactionHistory prepareTraxnHistory(Currency currency, String description, User user, Double purchaseamount,
+			TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount);
 
 }

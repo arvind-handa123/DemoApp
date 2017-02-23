@@ -25,10 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
+import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.User;
 import com.epay.epayApp.entity.Account.Currency;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.repository.jpa.AccountRepository;
+import com.epay.epayApp.repository.jpa.TransactionHistoryRepository;
 import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.service.DbConfigService;
 import com.epay.epayApp.service.LoginService;
@@ -59,6 +61,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	MemcachedClient memcachedClient;
+
+	@Autowired
+	private TransactionHistoryRepository transactionHistoryRepository;
 
 	@Autowired
 	private DbConfigService dbConfigService;
@@ -110,7 +115,7 @@ public class LoginServiceImpl implements LoginService {
 			user.setAccessToken(authToken);
 			user.setAccount(createAccount(user));
 			user = userRepository.save(user);
-
+			updateTransactionHistory(user);
 		} catch (Exception e) {
 			LOGGER.info("Problem while creating user for token = {}", authToken, e.getMessage());
 			e.printStackTrace();
@@ -120,20 +125,43 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	private Account createAccount(User user) {
+	private Account createAccount(User user) throws TransactionException {
 		String presetCurrency = dbConfigService.getProperty("PRESET_CURRENCY", "INR");
 		Currency currency = Currency.valueOf(presetCurrency);
 		String description = dbConfigService.getProperty(PRESET_DESCRIPTION,
 				"Welcome offer! preset Balance and currency added to account.");
 		Double presetAmount = dbConfigService.getDoubleProperty("PRESET_AMOUNT", 99.0);
-		Account sccount = transactionsService.CreateOrUpdateAccount(currency, description, user, presetAmount,
-				TraxnType.CREDIT, dbConfigService.getProperty("PRESET_TRXNID", "SYSTEM"), null, null);
-		return sccount;
+		/**
+		 * set transaction id as SYSTEM, whenever preset amount added.
+		 */
+		String system = dbConfigService.getProperty("PRESET_TRXNID", "SYSTEM");
+		Account account = transactionsService.CreateOrUpdateAccount(currency, description, user, presetAmount,
+				TraxnType.CREDIT, system, null, null);
+		return account;
 	}
 
-	private String prepareTraxnId(User user) {
-		if (user != null)
-			return user.getId() + "" + new Date().getTime();
-		return null;
+	private void updateTransactionHistory(User user) throws TransactionException {
+		/**
+		 * update credited preset amount in transaction history,
+		 * 
+		 */
+		if (user != null) {
+			Account account = user.getAccount();
+			try {
+				TransactionHistory transactionHistory = transactionsService.prepareTraxnHistory(account.getCurrency(),
+						account.getDescription(), user, 0.0, TraxnType.CREDIT, account.getTransactionId(), new Date(),
+						account.getBalanceAmount());
+				if (transactionHistory != null) {
+					transactionHistoryRepository.save(transactionHistory);
+				}
+
+			} catch (Exception e) {
+				LOGGER.info(
+						"Something went wrong, while savin transaction history call, error={}, userId={}, transactionType={}",
+						e.getMessage(), user.getId(), TraxnType.CREDIT);
+				throw new TransactionException(e.getMessage());
+			}
+
+		}
 	}
 }
