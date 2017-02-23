@@ -8,14 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
-import com.epay.epayApp.entity.TransactionHistory;
-import com.epay.epayApp.entity.User;
 import com.epay.epayApp.entity.Account.Currency;
+import com.epay.epayApp.entity.EpayUser;
+import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.repository.jpa.AccountRepository;
 import com.epay.epayApp.repository.jpa.TransactionHistoryRepository;
@@ -52,11 +53,11 @@ public class TransactionsServiceImpl implements TransactionsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionsService.class);
 
 	@Override
-	public UserBalanceDto fetchBalance(User user) {
+	public UserBalanceDto fetchBalance(EpayUser user) {
 		UserBalanceDto balanceDto = null;
 		if (user != null) {
 			balanceDto = new UserBalanceDto();
-			Account account = accountRepository.findOne(user.getId());
+			Account account = accountRepository.findOne(user.getAccount().getId());
 			balanceDto.setUserId(user.getId());
 			balanceDto.setCurrentBalance(account.getBalanceAmount());
 			balanceDto.setCurrencyCode(account.getCurrency().name());
@@ -67,7 +68,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
-	public List<TransactionsDto> fetchTransactionHistory(User user) {
+	public List<TransactionsDto> fetchTransactionHistory(EpayUser user) {
 		/**
 		 * fetch list of transaction for the user from db and prepare dto
 		 */
@@ -81,6 +82,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 			transactionsHistoryDto.setDate(transaction.getTransactionDate());
 			transactionsHistoryDto.setTransactionId(transaction.getTransactionId());
 			transactionsHistoryDto.setLastTransactionType(transaction.getLastTransactionType());
+			transactionsHistoryDto.setUserId(transaction.getUserId());
 			transactionsHistoryDtosList.add(transactionsHistoryDto);
 		}
 
@@ -88,8 +90,9 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
-	public String purchase(User user, Double purchaseAmount, Currency currency, String description, Date inputTraxnDate) {
-		Account userAccount = accountRepository.findOne(user.getId());
+	public String purchase(EpayUser user, Double purchaseAmount, Currency currency, String description,
+			Date inputTraxnDate)  {
+		Account userAccount = accountRepository.findOne(user.getAccount().getId());
 		if (userAccount != null) {
 			double balanceAmount = userAccount.getBalanceAmount() - purchaseAmount;
 			if (balanceAmount >= 0) {
@@ -116,7 +119,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
-	public String addBalance(Currency currency, String description, User user, double amountToBeAdded,
+	public String addBalance(Currency currency, String description, EpayUser user, double amountToBeAdded,
 			TraxnType traxnType) {
 		String traxnId = null;
 		try {
@@ -131,7 +134,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Transactional
-	private String persistTraxn(Double purchaseamount, Currency currency, String description, User user,
+	private String persistTraxn(Double purchaseamount, Currency currency, String description, EpayUser user,
 			double balanceAmount, TraxnType traxnType, Date trxnDate, Account userAccount) throws TransactionException {
 		String transactionId = prepareTraxnId(user);
 		try {
@@ -164,14 +167,14 @@ public class TransactionsServiceImpl implements TransactionsService {
 		return transactionId;
 	}
 
-	private String prepareTraxnId(User user) {
+	private String prepareTraxnId(EpayUser user) {
 		if (user != null)
 			return user.getId() + "" + new Date().getTime();
 		return null;
 	}
 
 	@Override
-	public TransactionHistory prepareTraxnHistory(Currency currency, String description, User user,
+	public TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser user,
 			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount) {
 		TransactionHistory transactionHistory = new TransactionHistory();
 		transactionHistory.setAmountSpent(purchaseamount);
@@ -191,7 +194,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
-	public Account CreateOrUpdateAccount(Currency currency, String description, User user, double balanceAmount,
+	public Account CreateOrUpdateAccount(Currency currency, String description, EpayUser user, double balanceAmount,
 			TraxnType traxnType, String transactionId, Date trxnDate, Account userAccount) {
 
 		if (user != null) {

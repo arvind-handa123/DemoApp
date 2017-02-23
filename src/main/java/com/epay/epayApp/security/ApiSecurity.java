@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.epay.epayApp.entity.User;
+import com.epay.epayApp.entity.EpayUser;
 import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.util.SecurityUtils;
 
@@ -97,7 +98,7 @@ public class ApiSecurity implements HandlerInterceptor {
 	}
 
 	private JSONObject lookupInDb(String accessToken, HttpServletResponse res) {
-		User user = userRepository.findByAccessToken(accessToken);
+		EpayUser user = userRepository.findByAccessToken(accessToken);
 		if (user == null) {
 			LOGGER.debug("User not found from access token {}", accessToken);
 			res.setStatus(HttpStatus.SC_UNAUTHORIZED);

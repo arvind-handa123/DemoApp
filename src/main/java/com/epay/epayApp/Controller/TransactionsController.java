@@ -10,20 +10,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.epay.epayApp.entity.User;
-import com.epay.epayApp.entity.Account.Currency;
+import com.epay.apayApp.exception.TransactionException;
+import com.epay.epayApp.entity.EpayUser;
 import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.rest.dto.TransactionsDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
 import com.epay.epayApp.service.TransactionsService;
 import com.epay.epayApp.service.UserService;
 import com.epay.epayApp.util.JsonUtils;
-import com.epay.epayApp.util.SecurityUtils;
 
 /**
  * 
@@ -56,7 +56,7 @@ public class TransactionsController {
 		LOGGER.info("/v1/balance request received : ");
 
 		UserBalanceDto userBalanceDto = null;
-		User user = userService.findUser(request);
+		EpayUser user = userService.findUser(request);
 		if (user != null)
 			userBalanceDto = transactionsService.fetchBalance(user);
 		else {
@@ -71,16 +71,20 @@ public class TransactionsController {
 	 * @param request
 	 * @return
 	 * 
+	 * @throws TransactionException
 	 * 
-	 *         Pass the payload(json) as string as request parameter, and parse
-	 *         it perform purchase, and returns the transaction status message
-	 *         whether the traxn was successful or failed
+	 * 
+	 *             Pass the payload(json) as string as request parameter, and
+	 *             parse it perform purchase, and returns the transaction status
+	 *             message whether the traxn was successful or failed
+	 * 
 	 */
 	@RequestMapping(value = "/spend", method = RequestMethod.POST)
-	public ResponseEntity<?> purchase(@RequestParam("payload") String payload, HttpServletRequest request) {
+	public ResponseEntity<?> purchase(@RequestParam("payload") String payload, HttpServletRequest request)
+			throws TransactionException {
 		LOGGER.info("/v1/spend request received : ");
 		TransactionsDto transactionsRequest = null;
-		User user = userService.findUser(request);
+		EpayUser user = userService.findUser(request);
 		if (user == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		try {
@@ -115,7 +119,7 @@ public class TransactionsController {
 	@RequestMapping(value = "/transactions", method = RequestMethod.GET)
 	public ResponseEntity<?> fetchHistory(HttpServletRequest request) {
 		LOGGER.info("/v1/transactions request received : ");
-		User user = userService.findUser(request);
+		EpayUser user = userService.findUser(request);
 		List<TransactionsDto> transactionsHistoryDtoList = null;
 		if (user != null)
 			transactionsHistoryDtoList = transactionsService.fetchTransactionHistory(user);

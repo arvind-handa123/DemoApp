@@ -53,11 +53,12 @@ public class TransactionsDto implements Serializable {
 		this.transactionId = transactionId;
 	}
 
+
 	@Override
 	public String toString() {
 		return "TransactionsDto [date=" + date + ", description=" + description + ", amountSpent=" + amountSpent
 				+ ", currency=" + currency + ", lastTransactionType=" + lastTransactionType + ", transactionId="
-				+ transactionId + "]";
+				+ transactionId + ", userId=" + userId + "]";
 	}
 
 	public TraxnType getLastTransactionType() {
@@ -68,8 +69,18 @@ public class TransactionsDto implements Serializable {
 		this.lastTransactionType = lastTransactionType;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	private Double amountSpent;
 	private Currency currency;
 	private TraxnType lastTransactionType;
 	private String transactionId;
+
+	private Long userId;
 }

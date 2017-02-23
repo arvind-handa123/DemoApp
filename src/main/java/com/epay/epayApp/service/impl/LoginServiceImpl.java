@@ -19,15 +19,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
-import com.epay.epayApp.entity.TransactionHistory;
-import com.epay.epayApp.entity.User;
 import com.epay.epayApp.entity.Account.Currency;
+import com.epay.epayApp.entity.EpayUser;
+import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.repository.jpa.AccountRepository;
 import com.epay.epayApp.repository.jpa.TransactionHistoryRepository;
@@ -78,7 +78,7 @@ public class LoginServiceImpl implements LoginService {
 		Map<String, String> authTokenMap = new HashMap<String, String>();
 		String authToken = UUID.randomUUID().toString();
 		try {
-			User user = createUser(authToken);
+			EpayUser user = createUser(authToken);
 			if (user != null) {
 				LOGGER.info("User and account created with token = {} and user = {} at {}", authToken, user.getId());
 				authTokenMap.put("AUTH_ACCESS_TOKEN", SecurityUtils.encript(authToken));
@@ -96,7 +96,7 @@ public class LoginServiceImpl implements LoginService {
 		return authTokenMap;
 	}
 
-	private void updateMemcache(User user) {
+	private void updateMemcache(EpayUser user) {
 		/**
 		 * Cache access Token as key value pair in memcache
 		 */
@@ -108,10 +108,10 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Transactional
-	private User createUser(String authToken) throws TransactionException {
-		User user = null;
+	private EpayUser createUser(String authToken) throws TransactionException {
+		EpayUser user = null;
 		try {
-			user = new User();
+			user = new EpayUser();
 			user.setAccessToken(authToken);
 			user.setAccount(createAccount(user));
 			user = userRepository.save(user);
@@ -125,7 +125,7 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	private Account createAccount(User user) throws TransactionException {
+	private Account createAccount(EpayUser user) throws TransactionException {
 		String presetCurrency = dbConfigService.getProperty("PRESET_CURRENCY", "INR");
 		Currency currency = Currency.valueOf(presetCurrency);
 		String description = dbConfigService.getProperty(PRESET_DESCRIPTION,
@@ -140,7 +140,7 @@ public class LoginServiceImpl implements LoginService {
 		return account;
 	}
 
-	private void updateTransactionHistory(User user) throws TransactionException {
+	private void updateTransactionHistory(EpayUser user) throws TransactionException {
 		/**
 		 * update credited preset amount in transaction history,
 		 * 

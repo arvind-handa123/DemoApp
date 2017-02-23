@@ -24,7 +24,7 @@ import org.hibernate.annotations.Index;
  */
 
 @Entity
-public class User implements Serializable {
+public class EpayUser implements Serializable {
 
 	public enum Gender {
 		MALE, FEMALE, UNKNOWN, BOTH

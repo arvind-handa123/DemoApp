@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.epay.epayApp.entity.User;
+import com.epay.epayApp.entity.EpayUser;
 import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.service.UserService;
 import com.epay.epayApp.util.SecurityUtils;
@@ -22,13 +22,13 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	@Override
-	public User findUser(HttpServletRequest request) {
+	public EpayUser findUser(HttpServletRequest request) {
 		/**
 		 * fetch auth Token and find out user from repository
 		 */
 		String accessToken = request.getHeader("AUTH_ACCESS_TOKEN");
 		String key = request.getHeader("TIME_OF_CALL");
-		User user = userRepository.findByAccessToken(SecurityUtils.decript(accessToken, key));
+		EpayUser user = userRepository.findByAccessToken(SecurityUtils.decript(accessToken, key));
 		return user;
 	}
 

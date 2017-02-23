@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
-import com.epay.epayApp.entity.TransactionHistory;
-import com.epay.epayApp.entity.User;
 import com.epay.epayApp.entity.Account.Currency;
+import com.epay.epayApp.entity.EpayUser;
+import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.rest.dto.TransactionsDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
@@ -20,19 +20,19 @@ import com.epay.epayApp.rest.dto.UserBalanceDto;
 
 public interface TransactionsService {
 
-	UserBalanceDto fetchBalance(User user);
+	UserBalanceDto fetchBalance(EpayUser EpayUser);
 
-	public String purchase(User user, Double purchaseAmount, Currency currency, String description, Date date);
+	public String purchase(EpayUser EpayUser, Double purchaseAmount, Currency currency, String description, Date date) ;
 
-	public List<TransactionsDto> fetchTransactionHistory(User user);
+	public List<TransactionsDto> fetchTransactionHistory(EpayUser EpayUser);
 
-	String addBalance(Currency inr, String description, User user, double amountToBeAdded, TraxnType credit)
+	String addBalance(Currency inr, String description, EpayUser EpayUser, double amountToBeAdded, TraxnType credit)
 			throws TransactionException;
 
-	Account CreateOrUpdateAccount(Currency currency, String description, User user, double balanceAmount,
-			TraxnType traxnType, String transactionId, Date trxnDate, Account userAccount);
+	Account CreateOrUpdateAccount(Currency currency, String description, EpayUser EpayUser, double balanceAmount,
+			TraxnType traxnType, String transactionId, Date trxnDate, Account EpayUserAccount);
 
-	TransactionHistory prepareTraxnHistory(Currency currency, String description, User user, Double purchaseamount,
+	TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser EpayUser, Double purchaseamount,
 			TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount);
 
 }
