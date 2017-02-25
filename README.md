@@ -36,6 +36,15 @@ the backend will run as a standalone java process.
     jdbc.generate.ddl=true  
     hibernate.jdbc.batch_size=10000   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
+    
+    Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
+      +   PRESET_AMOUNT: 99.0
+      +   PRESET_CURRENCY: "INR"
+      +   PRESET_DESCRIPTION: "Welcome offer! preset Balance and currency added to account."
+      +   TRAXN_SUCCESS_MESSAGE: "Cheers! Your transaction was successful, and your transaction Id is : "
+      +   TRAXN_FAILURE_MESSAGE: "Oops! Something went wrong, your transaction was unsuccessful."
+      +   INSUFFICIENT_BALANCE:  "Sorry! Insufficient balance, transaction could not be completed."
+    
   
 * Configuring Memcache
   + install and start memcache server, the memcache host and port need to be entered in memcached.properties file, as shown below.              MEMCACHED_SERVERS=localhost:11211
