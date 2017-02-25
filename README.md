@@ -26,7 +26,7 @@ the backend will run as a standalone java process.
 
 * Setting Database Configuration
   + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
-
+```java
     jdbc.username=abc   
     jdbc.password=***   
     jdbc.url=jdbc:postgresql://localhost:5432/dbName?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8   
@@ -36,7 +36,7 @@ the backend will run as a standalone java process.
     jdbc.generate.ddl=true  
     hibernate.jdbc.batch_size=100   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
-    
+```    
     Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
       +   PRESET_AMOUNT: 99.0
       +   PRESET_CURRENCY: "INR"
