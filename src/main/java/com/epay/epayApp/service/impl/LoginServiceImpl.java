@@ -69,9 +69,6 @@ public class LoginServiceImpl implements LoginService {
 	private DbConfigService dbConfigService;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImpl.class);
-	private static final String PRESET_AMOUNT = "preset.balance";
-	private static final String PRESET_DESCRIPTION = "preset.balance.description";
-	private static final String PRESET_CURRENCY = "preset.currency";
 
 	@Override
 	public Map<String, String> generateAuthToken() {
@@ -127,7 +124,7 @@ public class LoginServiceImpl implements LoginService {
 	private Account createAccount(EpayUser user) throws TransactionException {
 		String presetCurrency = dbConfigService.getProperty("PRESET_CURRENCY", "INR");
 		Currency currency = Currency.valueOf(presetCurrency);
-		String description = dbConfigService.getProperty(PRESET_DESCRIPTION,
+		String description = dbConfigService.getProperty("PRESET_DESCRIPTION",
 				"Welcome offer! preset Balance and currency added to account.");
 		Double presetAmount = dbConfigService.getDoubleProperty("PRESET_AMOUNT", 99.0);
 		/**

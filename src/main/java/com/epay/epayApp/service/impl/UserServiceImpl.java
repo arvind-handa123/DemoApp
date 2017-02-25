@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 	public UserProfileDto prepareUserDto(EpayUser epayUser) {
 		UserProfileDto userProfileDto = new UserProfileDto();
 		userProfileDto.setEmail(epayUser.getEmail());
-		userProfileDto.setFirstName(epayUser.getEmail());
+		userProfileDto.setFirstName(epayUser.getFirstName());
 		userProfileDto.setLastName(epayUser.getLastName());
 		userProfileDto.setGender(epayUser.getGender());
 		userProfileDto.setPhoneNumber(epayUser.getPhoneNumber());
