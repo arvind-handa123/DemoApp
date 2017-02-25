@@ -13,5 +13,5 @@ The API will have 4 endpoints and will communicate JSON with at least the follow
 
 # Technology stack
 
-use dropwizard java framework for the server and postgres for the database (using a cache would be beneficial)
+use java framework for the server and postgres for the database (using a cache would be beneficial)
 the backend will run as a standalone java process.
