@@ -24,4 +24,22 @@ the backend will run as a standalone java process.
 
 # Tutorial
 
-* 
+* Setting Database Configuration
+  + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
+
+  jdbc.username=abc
+  jdbc.password=***
+  jdbc.url=jdbc:postgresql://localhost:5432/dbNamne?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8
+  jdbc.database=POSTGRESQL
+  jdbc.driver.classname=org.postgresql.Driver
+  jdbc.show.sql=false
+  jdbc.generate.ddl=true
+  hibernate.jdbc.batch_size=10000
+  jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect
+  
+* Configuring Memcache
+  + install and start memcache server, the memcache host and port need to be entered in memcached.properties file, as shown below.
+  MEMCACHED_SERVERS=localhost:11211
+  
+
+

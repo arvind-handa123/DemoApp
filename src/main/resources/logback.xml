@@ -14,13 +14,13 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework" level="WARN">
+    <logger name="org.springframework" level="TRACE">
     </logger>
 
-    <logger name="com.ning" level="WARN">>
+    <logger name="com.ning" level="TRACE">>
     </logger>
 
-    <logger name="org.apache.activemq" level="WARN">
+    <logger name="org.apache.activemq" level="TRACE">
     </logger>
 
     <root level="DEBUG">
