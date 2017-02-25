@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,6 @@ import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.rest.dto.TransactionsDto;
 import com.epay.epayApp.rest.dto.TransactionsStatusDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
-import com.epay.epayApp.rest.dto.UserProfileDto;
 import com.epay.epayApp.service.DbConfigService;
 import com.epay.epayApp.service.TransactionsService;
 
@@ -104,7 +102,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 					transactionId = persistTraxn(purchaseAmount, currency, description, user, balanceAmount,
 							TraxnType.DEBIT, inputTraxnDate, userAccount);
 				} catch (TransactionException e) {
-					LOGGER.info("Exception occured while calling purchase ", e.getMessage());
+					LOGGER.error("Exception occured while calling purchase ", e.getMessage());
 				}
 				/**
 				 * prepare dto with transaction id and status
@@ -164,7 +162,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 				throw new TransactionException("Transaction was Unsuccessful");
 			}
 		} catch (TransactionException e) {
-			LOGGER.info("Problem while adding balance to user = {} ", user.getId());
+			LOGGER.error("Problem while adding balance to user = {} ", user.getId());
 		}
 		return traxnId;
 	}
@@ -180,7 +178,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 				userAccount = accountRepository.saveAndFlush(userAccount);
 			}
 		} catch (Exception e) {
-			LOGGER.info("Something went wrong, while persisting account, error={}, userId={}, transactionType={}",
+			LOGGER.error("Something went wrong, while persisting account, error={}, userId={}, transactionType={}",
 					e.getMessage(), user.getId(), traxnType);
 			throw new TransactionException(e.getMessage());
 
@@ -192,7 +190,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 			try {
 				transactionHistoryRepository.save(transactionHistory);
 			} catch (Exception e) {
-				LOGGER.info(
+				LOGGER.error(
 						"Something went wrong, while savin transaction history call, error={}, userId={}, transactionType={}",
 						e.getMessage(), user.getId(), traxnType);
 				return null;
@@ -269,7 +267,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 		try {
 			user.setGender(Gender.valueOf(gender.toUpperCase()));
 		} catch (Exception e) {
-			LOGGER.info("Problem while setting gender, gender {} not found :", gender, e.getMessage());
+			LOGGER.error("Problem while setting gender, gender {} not found :", gender, e.getMessage());
 		}
 		if (mobileNumber != null)
 			user.setPhoneNumber(mobileNumber);

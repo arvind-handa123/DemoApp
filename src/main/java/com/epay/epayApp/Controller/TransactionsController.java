@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +23,6 @@ import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.rest.dto.TransactionsDto;
 import com.epay.epayApp.rest.dto.TransactionsStatusDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
-import com.epay.epayApp.rest.dto.UserProfileDto;
 import com.epay.epayApp.service.TransactionsService;
 import com.epay.epayApp.service.UserService;
 import com.epay.epayApp.util.JsonUtils;
@@ -95,7 +93,7 @@ public class TransactionsController {
 			// deserialise payload i.e., json
 			transactionsRequest = JsonUtils.deserializeEntity(payload, TransactionsDto.class);
 		} catch (IOException e) {
-			LOGGER.info("Problem while deserializing payload for token = {}", request.getHeader("AUTH_ACCESS_TOKEN"),
+			LOGGER.error("Problem while deserializing payload for token = {}", request.getHeader("AUTH_ACCESS_TOKEN"),
 					e.getMessage());
 		}
 		TransactionsStatusDto transactionStatusDto = null;
@@ -182,7 +180,7 @@ public class TransactionsController {
 		try {
 			userCurrency = Currency.valueOf(currency);
 		} catch (Exception e) {
-			LOGGER.info("problem while fetching currency, currency {} not found", currency, e.getMessage());
+			LOGGER.error("problem while fetching currency, currency {} not found", currency, e.getMessage());
 		}
 		if (userCurrency == null)
 			userCurrency = epayUser.getAccount().getCurrency();
@@ -190,7 +188,7 @@ public class TransactionsController {
 			traxnId = transactionsService.addBalance(userCurrency, remark, epayUser, amount, TraxnType.CREDIT,
 					epayUser.getAccount());
 		} catch (TransactionException e) {
-			LOGGER.info("Problem whille adding balance to wallet for user {} ", epayUser.getId(), e.getMessage());
+			LOGGER.error("Problem whille adding balance to wallet for user {} ", epayUser.getId(), e.getMessage());
 		}
 		TransactionsStatusDto transactionDto = transactionsService.prepareTransactionStatusDto(epayUser,
 				epayUser.getAccount(), traxnId, false, TraxnType.CREDIT);

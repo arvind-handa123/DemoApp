@@ -88,7 +88,7 @@ public class LoginServiceImpl implements LoginService {
 			}
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
 				| BadPaddingException | TransactionException e) {
-			LOGGER.info("Problem while creating user or adding balance ");
+			LOGGER.error("Problem while creating user or adding balance {} ", e.getMessage());
 			return null;
 
 		}
@@ -117,8 +117,7 @@ public class LoginServiceImpl implements LoginService {
 			user = userRepository.save(user);
 			updateTransactionHistory(user);
 		} catch (Exception e) {
-			LOGGER.info("Problem while creating user for token = {}", authToken, e.getMessage());
-			e.printStackTrace();
+			LOGGER.error("Problem while creating user for token = {}", authToken, e.getMessage());
 			return null;
 		}
 		return user;
@@ -156,7 +155,7 @@ public class LoginServiceImpl implements LoginService {
 				}
 
 			} catch (Exception e) {
-				LOGGER.info(
+				LOGGER.error(
 						"Something went wrong, while savin transaction history call, error={}, userId={}, transactionType={}",
 						e.getMessage(), user.getId(), TraxnType.CREDIT);
 				throw new TransactionException(e.getMessage());
