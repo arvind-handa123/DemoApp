@@ -38,12 +38,14 @@ the backend will run as a standalone java process.
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
 ```    
     Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
-      +   PRESET_AMOUNT: 99.0
-      +   PRESET_CURRENCY: "INR"
-      +   PRESET_DESCRIPTION: "Welcome offer! preset Balance and currency added to account."
-      +   TRAXN_SUCCESS_MESSAGE: "Cheers! Your transaction was successful, and your transaction Id is : "
-      +   TRAXN_FAILURE_MESSAGE: "Oops! Something went wrong, your transaction was unsuccessful."
-      +   INSUFFICIENT_BALANCE:  "Sorry! Insufficient balance, transaction could not be completed."
+```java        
+         PRESET_AMOUNT: 99.0
+         PRESET_CURRENCY: "INR"
+         PRESET_DESCRIPTION: "Welcome offer! preset Balance and currency added to account."
+         TRAXN_SUCCESS_MESSAGE: "Cheers! Your transaction was successful, and your transaction Id is : "
+         TRAXN_FAILURE_MESSAGE: "Oops! Something went wrong, your transaction was unsuccessful."
+         INSUFFICIENT_BALANCE:  "Sorry! Insufficient balance, transaction could not be completed."
+         ```
     
   
 * Configuring Memcache
@@ -51,14 +53,17 @@ the backend will run as a standalone java process.
   
 *  API's
   + Request
+  ```curl
     curl -X POST -H "Cache-Control: no-cache" -H "Postman-Token: c43da818-b4aa-1b39-31ae-e63e7d4783d4" "{{host}}/epayApp/api/v1/login"
     API is responsible for creating a new user, and adding some preset balance to the user Account. It simply returns the token which       can be used in subsequent API calls for retrieving user details and other info. sample token response is mentioned below.
+    ```
   + Response
+```curl   
    {
     "AUTH_ACCESS_TOKEN": "1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs",
     "TIME_OF_CALL": "1441177929934000"
   }
-  
+```  
   + Request
     
     curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL:                  1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 28288cf1-001d-78b3-4c4b-48491d8234a0" "{{host}}/epayApp/api/v1/balance"
