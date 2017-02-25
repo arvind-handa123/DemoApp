@@ -27,14 +27,14 @@ the backend will run as a standalone java process.
 * Setting Database Configuration
   + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
 
-    jdbc.username=abc
-    jdbc.password=***
-    jdbc.url=jdbc:postgresql://localhost:5432/dbNamne?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8
-    jdbc.database=POSTGRESQL
-    jdbc.driver.classname=org.postgresql.Driver
-    jdbc.show.sql=false
-    jdbc.generate.ddl=true
-    hibernate.jdbc.batch_size=10000
+    jdbc.username=abc\n
+    jdbc.password=***\n
+    jdbc.url=jdbc:postgresql://localhost:5432/dbNamne?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8\n
+    jdbc.database=POSTGRESQL\n
+    jdbc.driver.classname=org.postgresql.Driver\n
+    jdbc.show.sql=false\n
+    jdbc.generate.ddl=true\n
+    hibernate.jdbc.batch_size=10000\n
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect
   
 * Configuring Memcache
