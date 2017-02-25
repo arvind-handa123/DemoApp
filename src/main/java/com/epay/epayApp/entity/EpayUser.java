@@ -82,16 +82,15 @@ public class EpayUser implements Serializable {
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
-
 	private String firstName;
-
 	private String lastName;
-
 	@Column(length = 512)
 	@Index(name = "accessToken")
 	private String accessToken;
 	private Date createdTime;
 	private Gender gender;
+	private String email;
+	private Long phoneNumber;
 
 	@PrePersist
 	protected void updateDates() {
@@ -109,6 +108,22 @@ public class EpayUser implements Serializable {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Long getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(Long phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }
