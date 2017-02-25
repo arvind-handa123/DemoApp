@@ -29,12 +29,12 @@ the backend will run as a standalone java process.
 
     jdbc.username=abc   
     jdbc.password=***   
-    jdbc.url=jdbc:postgresql://localhost:5432/dbNamne?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8   
+    jdbc.url=jdbc:postgresql://localhost:5432/dbName?autoReconnect=true&useUnicode=true&characterEncoding=UTF-   8&connectionCollation=utf8_unicode_ci&characterSetResults=UTF-8   
     jdbc.database=POSTGRESQL  
     jdbc.driver.classname=org.postgresql.Driver   
     jdbc.show.sql=false   
     jdbc.generate.ddl=true  
-    hibernate.jdbc.batch_size=10000   
+    hibernate.jdbc.batch_size=100   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
     
     Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
