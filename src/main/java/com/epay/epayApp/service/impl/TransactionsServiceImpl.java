@@ -16,13 +16,16 @@ import com.epay.apayApp.exception.TransactionException;
 import com.epay.epayApp.entity.Account;
 import com.epay.epayApp.entity.Account.Currency;
 import com.epay.epayApp.entity.EpayUser;
+import com.epay.epayApp.entity.EpayUser.Gender;
 import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.repository.jpa.AccountRepository;
 import com.epay.epayApp.repository.jpa.TransactionHistoryRepository;
 import com.epay.epayApp.repository.jpa.UserRepository;
 import com.epay.epayApp.rest.dto.TransactionsDto;
+import com.epay.epayApp.rest.dto.TransactionsStatusDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
+import com.epay.epayApp.rest.dto.UserProfileDto;
 import com.epay.epayApp.service.DbConfigService;
 import com.epay.epayApp.service.TransactionsService;
 
@@ -90,8 +93,8 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
-	public String purchase(EpayUser user, Double purchaseAmount, Currency currency, String description,
-			Date inputTraxnDate)  {
+	public TransactionsStatusDto purchase(EpayUser user, Double purchaseAmount, Currency currency, String description,
+			Date inputTraxnDate) {
 		Account userAccount = accountRepository.findOne(user.getAccount().getId());
 		if (userAccount != null) {
 			double balanceAmount = userAccount.getBalanceAmount() - purchaseAmount;
@@ -103,15 +106,16 @@ public class TransactionsServiceImpl implements TransactionsService {
 				} catch (TransactionException e) {
 					LOGGER.info("Exception occured while calling purchase ", e.getMessage());
 				}
-				if (transactionId != null && !transactionId.isEmpty())
-					return dbConfigService.getProperty("TRAXN_SUCCESS_MESSAGE",
-							"Cheers! Your transaction was successful, and your transactyionId is : ") + transactionId;
-				else
-					return dbConfigService.getProperty("TRAXN_FAILURE_MESSAGE",
-							"Oops! Something went wrong, your transaction was unsuccessful.");
+				/**
+				 * prepare dto with transaction id and status
+				 */
+				return prepareTransactionStatusDto(user, userAccount, transactionId, true, TraxnType.DEBIT);
 			} else {
-				return dbConfigService.getProperty("INSUFFICIENT_BALANCE",
-						"Sorry! Insufficient balance, transaction could not be completed.");
+				/**
+				 * if balance sufficient balance is not available, return dto
+				 * with insufficient balance message
+				 */
+				return prepareTransactionStatusDto(user, userAccount, null, false, TraxnType.DEBIT);
 			}
 		}
 		return null;
@@ -119,11 +123,43 @@ public class TransactionsServiceImpl implements TransactionsService {
 	}
 
 	@Override
+	public TransactionsStatusDto prepareTransactionStatusDto(EpayUser user, Account userAccount, String transactionId,
+			boolean isBalanceAmountAvailabale, TraxnType transactiontype) {
+		TransactionsStatusDto statusDto = new TransactionsStatusDto();
+		if (TraxnType.CREDIT.equals(transactiontype)) {
+			return fetchStatus(statusDto, transactionId);
+
+		} else if (TraxnType.DEBIT.equals(transactiontype)) {
+			if (isBalanceAmountAvailabale) {
+				return fetchStatus(statusDto, transactionId);
+			} else {
+				statusDto.setStatus(dbConfigService.getProperty("INSUFFICIENT_BALANCE",
+						"Sorry! Insufficient balance, transaction could not be completed."));
+			}
+		}
+		return statusDto;
+
+	}
+
+	private TransactionsStatusDto fetchStatus(TransactionsStatusDto statusDto, String transactionId) {
+		if (transactionId != null && !transactionId.isEmpty()) {
+			statusDto.setStatus(dbConfigService.getProperty("TRAXN_SUCCESS_MESSAGE",
+					"Cheers! Your transaction was successful, and your transaction Id is : " + transactionId));
+		} else {
+			statusDto.setStatus(dbConfigService.getProperty("TRAXN_FAILURE_MESSAGE",
+					"Oops! Something went wrong, your transaction was unsuccessful."));
+
+		}
+		return statusDto;
+
+	}
+
+	@Override
 	public String addBalance(Currency currency, String description, EpayUser user, double amountToBeAdded,
-			TraxnType traxnType) {
+			TraxnType traxnType, Account userAccount) {
 		String traxnId = null;
 		try {
-			traxnId = persistTraxn(0.0, currency, description, user, amountToBeAdded, traxnType, null, null);
+			traxnId = persistTraxn(0.0, currency, description, user, amountToBeAdded, traxnType, null, userAccount);
 			if (traxnId == null) {
 				throw new TransactionException("Transaction was Unsuccessful");
 			}
@@ -200,19 +236,44 @@ public class TransactionsServiceImpl implements TransactionsService {
 		if (user != null) {
 			if (userAccount == null)
 				userAccount = new Account();
-			userAccount.setBalanceAmount(balanceAmount);
+
 			userAccount.setCurrency(currency);
 			userAccount.setDescription(description);
 			if (trxnDate == null)
 				trxnDate = new Date();
 			userAccount.setUpdatedTime(trxnDate);
 			userAccount.setTransactionId(transactionId);
-			if (TraxnType.CREDIT == traxnType)
+			if (TraxnType.CREDIT == traxnType) {
 				userAccount.setLastTransactionType(TraxnType.CREDIT);
-			else
+				if ((userAccount.getBalanceAmount() != null))
+					userAccount.setBalanceAmount(userAccount.getBalanceAmount() + balanceAmount);
+				else
+					userAccount.setBalanceAmount(balanceAmount);
+			} else {
 				userAccount.setLastTransactionType(TraxnType.DEBIT);
+				userAccount.setBalanceAmount(balanceAmount);
+			}
 		}
 		return userAccount;
 	}
 
+	@Override
+	public EpayUser updateProfile(EpayUser user, String firstName, String lastname, Long mobileNumber, String email,
+			String gender) {
+		if (firstName != null && !firstName.isEmpty())
+			user.setFirstName(firstName);
+		if (lastname != null && !lastname.isEmpty())
+			user.setLastName(lastname);
+		if (email != null && !email.isEmpty())
+			user.setEmail(email);
+		try {
+			user.setGender(Gender.valueOf(gender.toUpperCase()));
+		} catch (Exception e) {
+			LOGGER.info("Problem while setting gender, gender {} not found :", gender, e.getMessage());
+		}
+		if (mobileNumber != null)
+			user.setPhoneNumber(mobileNumber);
+		userRepository.save(user);
+		return user;
+	}
 }

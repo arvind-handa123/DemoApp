@@ -1,4 +1,4 @@
-# DemoApp
+# ePayApp
 The task is to create an backend application that provides a set of APIs to be called from a frontend UI.
 # API Requirements
 The API will have 4 endpoints and will communicate JSON with at least the following functionality for each end point:

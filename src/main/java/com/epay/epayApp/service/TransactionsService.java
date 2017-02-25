@@ -10,7 +10,9 @@ import com.epay.epayApp.entity.EpayUser;
 import com.epay.epayApp.entity.TransactionHistory;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.epay.epayApp.rest.dto.TransactionsDto;
+import com.epay.epayApp.rest.dto.TransactionsStatusDto;
 import com.epay.epayApp.rest.dto.UserBalanceDto;
+import com.epay.epayApp.rest.dto.UserProfileDto;
 
 /**
  * 
@@ -22,17 +24,24 @@ public interface TransactionsService {
 
 	UserBalanceDto fetchBalance(EpayUser EpayUser);
 
-	public String purchase(EpayUser EpayUser, Double purchaseAmount, Currency currency, String description, Date date) ;
+	public TransactionsStatusDto purchase(EpayUser EpayUser, Double purchaseAmount, Currency currency,
+			String description, Date date);
 
 	public List<TransactionsDto> fetchTransactionHistory(EpayUser EpayUser);
 
-	String addBalance(Currency inr, String description, EpayUser EpayUser, double amountToBeAdded, TraxnType credit)
-			throws TransactionException;
+	String addBalance(Currency inr, String description, EpayUser EpayUser, double amountToBeAdded, TraxnType credit,
+			Account userAccount) throws TransactionException;
 
 	Account CreateOrUpdateAccount(Currency currency, String description, EpayUser EpayUser, double balanceAmount,
 			TraxnType traxnType, String transactionId, Date trxnDate, Account EpayUserAccount);
 
-	TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser EpayUser, Double purchaseamount,
-			TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount);
+	TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser EpayUser,
+			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount);
+
+	EpayUser updateProfile(EpayUser user, String firstName, String lastname, Long mobileNumber, String email,
+			String gender);
+
+	TransactionsStatusDto prepareTransactionStatusDto(EpayUser epayUser, Account account, String traxnId, boolean b,
+			TraxnType credit);
 
 }

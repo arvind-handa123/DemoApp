@@ -555,7 +555,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>DemoApp</finalName>
+		<finalName>epayApp</finalName>
 		<plugins>
 			<plugin>
 				<inherited>true</inherited>
@@ -579,5 +579,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<artifactId>DemoApp</artifactId>
+	<artifactId>epayApp</artifactId>
 </project>
