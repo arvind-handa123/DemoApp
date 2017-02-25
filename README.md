@@ -51,6 +51,7 @@ the backend will run as a standalone java process.
   }
   
   + Request
+    
     curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL:                  1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 28288cf1-001d-78b3-4c4b-48491d8234a0" "{{host}}/epayApp/api/v1/balance"
     A GET request that will accept an Authorization header (with the token value output from /login) and  will return the current           balance along with the currency code and other info. sample response is shown below.
     
@@ -61,36 +62,43 @@ the backend will run as a standalone java process.
     "currencyCode": "INR",
     "lastTraxnType": "DEBIT"
     }
+    
   + Request
-curl -X POST -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 1224fa94-bfe4-e288-fd80-cfbe19ff2f84" -d '{"date":"" ,
-"description":"1st Transaction",
-"amountSpent": 50.0,
-"currency":"inr"
-}' "{{host}}/epayApp/api/v1/spend?payload={%22date%22:%22%22%2C%22description%22:%22Transaction%22%2C%20%22amountSpent%22:%2050.0%2C%20%22currency%22:0%20}"
 
-A POST request that will accept an Authorization header (with the token value output from /login), JSON payload content representing one spend transaction with the transaction date, description, amount, currency etc. It will simply return status of Your transaction with transaaction Id(In case of successful transaction).
+  curl -X POST -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 1224fa94-bfe4-e288-fd80-cfbe19ff2f84" -d '{"date":"" ,
+  "description":"1st Transaction",
+  "amountSpent": 50.0,
+  "currency":"inr"
+  }' "{{host}}/epayApp/api/v1/spend?payload=            {%22date%22:%22%22%2C%22description%22:%22Transaction%22%2C%20%22amountSpent%22:%2050.0%2C%20%22currency%22:0%20}"
+
+    A POST request that will accept an Authorization header (with the token value output from /login), JSON payload content representing one spend transaction with the transaction date, description, amount, currency etc. It will simply return status of Your transaction with transaaction Id(In case of successful transaction).
 
 + Response in case of successful purchase
 
-{
+  {
     "status": "Cheers! Your transaction was successful, and your transaction Id is : 271488004967497"
-}
-+ Response in case of unsuccessful purchases
-{
+  }
+  
+  + Response in case of unsuccessful purchases
+  
+    {
   "status": "Sorry! Insufficient balance, transaction could not be completed."
-}
-or
-{
+    }
+ 
+ or
+  
+   {
   "status": "Oops! Something went wrong, your transaction was unsuccessful."
-}
+   }
 
 + Request
-curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 75c9f06c-4503-35a3-4f2c-a03dddd87ee2" "{{host}}/epayApp/api/v1/transactions"
 
-API takes access token as input in header and returns list of transaction done on a particular account by user or system.
+    curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 75c9f06c-4503-35a3-4f2c-a03dddd87ee2" "{{host}}/epayApp/api/v1/transactions"
+
+   API takes access token as input in header and returns list of transaction done on a particular account by user or system.
 + Response
 
-[
+  [
     {
         "date": 1488004917102,
         "description": "Welcome offer! preset Balance and currency added to account.",
@@ -109,27 +117,30 @@ API takes access token as input in header and returns list of transaction done o
         "transactionId": "271488004967497",
         "userId": 27
     }
-]
+  ]
 
 + Request
-curl -X POST -H "AUTH_ACCESS_TOKEN: eVcnHTqMilOI2tC1PN4GaGauAF6ZyCEhRlgONmrLabShRf7NJGgsPQW9lXaCjA19" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: bd0e392c-c551-59c9-cdf5-c2d64543f819" "{{host}}/epayApp/api/v1/update/profile?firstName=ABC&lastName=PQR&email=abcpqr@gmail.com&mobileNumber=9876543210&gender=male"
-Takes user details as input with access token in header and updates user deatils in db. returns the dto of saved information of particular user.
+
+     curl -X POST -H "AUTH_ACCESS_TOKEN: eVcnHTqMilOI2tC1PN4GaGauAF6ZyCEhRlgONmrLabShRf7NJGgsPQW9lXaCjA19" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: bd0e392c-c551-59c9-cdf5-c2d64543f819" "{{host}}/epayApp/api/v1/update/profile?firstName=ABC&lastName=PQR&email=abcpqr@gmail.com&mobileNumber=9876543210&gender=male"
+     Takes user details as input with access token in header and updates user deatils in db. returns the dto of saved information of particular user.
  
 + Response
 
-{
+  {
     "gender": "MALE",
     "email": "abcpqr@gmail.com",
     "phoneNumber": 9876543210,
     "firstName": "abc",
     "lastName": "pqr"
-}
+  }
 
 + Request
-curl -X POST -H "AUTH_ACCESS_TOKEN: JLlxnrfCJ8Y4ibkY5aVlLs2xWVkmVtJGCqrxAJlddJMJ0LN6QlJVkP//VRcVBNsz" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 934da843-00e6-d986-00ba-a13103928e1e" "{{host}}/epayApp/api/v1/recharge/wallet?amount=100&currency=inr&email=abcpqr@gmail.com&remark=test"
 
-API is responsible for adding amount to wallet, takes amount and currency as mandatory parameter and returns the status of transaction similar to /spend api
+    curl -X POST -H "AUTH_ACCESS_TOKEN: JLlxnrfCJ8Y4ibkY5aVlLs2xWVkmVtJGCqrxAJlddJMJ0LN6QlJVkP//VRcVBNsz" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 934da843-00e6-d986-00ba-a13103928e1e" "{{host}}/epayApp/api/v1/recharge/wallet?amount=100&currency=inr&email=abcpqr@gmail.com&remark=test"
+
+    API is responsible for adding amount to wallet, takes amount and currency as mandatory parameter and returns the status of transaction similar to /spend api
 + Response
-{
+
+    {
     "status": "Cheers! Your transaction was successful, and your transaction Id is : 141488022418114"
-}
+    }
