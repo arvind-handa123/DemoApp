@@ -6,6 +6,11 @@ import com.epay.epayApp.entity.EpayUser.Gender;
 import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+/**
+ * 
+ * @author Asad Ali
+ *
+ */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class UserProfileDto implements Serializable {
 
@@ -18,10 +23,12 @@ public class UserProfileDto implements Serializable {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
 	private Gender gender;
 	private String email;
 	private Long phoneNumber;
 	private String firstName;
+
 	@Override
 	public String toString() {
 		return "UserProfileDto [userId=" + userId + ", gender=" + gender + ", email=" + email + ", phoneNumber="
@@ -67,6 +74,7 @@ public class UserProfileDto implements Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	private String lastName;
 
 }

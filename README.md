@@ -11,7 +11,17 @@ The API will have 4 endpoints and will communicate JSON with at least the follow
 
 * /spend - a POST request that will accept an Authorization header (with the token value output from /login), JSON content representing one spend transaction with the transaction date, description, amount, currency.
 
+* /update/profile - a POST request that will accept an Authorization header (with the token value output from /login),  input parameter  content representing user name, email, mobile number, gender and other details.
+
+* /recharge/wallet - a POST request that will accept an Authorization header (with the token value output from /login),  input parameter  content representing amount to be added, with currency and other optional detail like coupan code, remark etc.
+
 # Technology stack
 
-use dropwizard java framework for the server and postgres for the database (using a cache would be beneficial)
-the backend will run as a standalone java process.
+* Used Java and related framework (JPA,Spring,Hibernate,Spring Rest etc) and postgres for the database. 
+* Used Memcache for caching frequently used data, Application build using Tomcat server, However any other server can also be used.
+
+the backend will run as a standalone java process. 
+
+# Tutorial
+
+* 

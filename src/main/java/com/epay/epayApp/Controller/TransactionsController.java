@@ -190,8 +190,7 @@ public class TransactionsController {
 			traxnId = transactionsService.addBalance(userCurrency, remark, epayUser, amount, TraxnType.CREDIT,
 					epayUser.getAccount());
 		} catch (TransactionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.info("Problem whille adding balance to wallet for user {} ", epayUser.getId(), e.getMessage());
 		}
 		TransactionsStatusDto transactionDto = transactionsService.prepareTransactionStatusDto(epayUser,
 				epayUser.getAccount(), traxnId, false, TraxnType.CREDIT);

@@ -4,9 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.epay.epayApp.entity.Account.Currency;
-import com.epay.epayApp.entity.TransactionHistory.TraxnType;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+/**
+ * 
+ * @author Asad Ali
+ *
+ */
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransactionsStatusDto implements Serializable {
