@@ -39,6 +39,7 @@ the backend will run as a standalone java process.
   
 * Configuring Memcache
   + install and start memcache server, the memcache host and port need to be entered in memcached.properties file, as shown below.
+  
   MEMCACHED_SERVERS=localhost:11211
   
 
