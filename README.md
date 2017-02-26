@@ -26,7 +26,7 @@ The API will have 6 endpoints and will communicate JSON with at least the follow
 + Databse is configurable, just add maven dependency of db in pom and db configuration in persistence.properties file, you are ready to go. 
 + The backend will run as a standalone java process. 
 
-* Setting Database Configuration
+### Setting Database Configuration
   + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
 ```java
     jdbc.username=abc   
@@ -51,10 +51,11 @@ The API will have 6 endpoints and will communicate JSON with at least the follow
  ```
     
   
-* Configuring Memcache
+### Configuring Memcache
   + install and start memcache server, the memcache host and port need to be entered in memcached.properties file, as shown below.              MEMCACHED_SERVERS=localhost:11211
   
-*  API's
+###  API's
+
   + Request
   ```java
     curl -X POST -H "Cache-Control: no-cache" -H "Postman-Token: c43da818-b4aa-1b39-31ae-e63e7d4783d4" "{{host}}/epayApp/api/v1/login"
