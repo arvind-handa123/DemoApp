@@ -36,7 +36,8 @@ public interface TransactionsService {
 			TraxnType traxnType, String transactionId, Date trxnDate, Account EpayUserAccount);
 
 	TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser EpayUser,
-			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount);
+			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount,
+			Account userAccount);
 
 	EpayUser updateProfile(EpayUser user, String firstName, String lastname, Long mobileNumber, String email,
 			String gender);

@@ -77,12 +77,16 @@ public class TransactionsServiceImpl implements TransactionsService {
 		List<TransactionHistory> transactions = transactionHistoryRepository.findByUserId(user.getId());
 		List<TransactionsDto> transactionsHistoryDtosList = transactions.stream().map(f -> {
 			TransactionsDto transactionsHistoryDto = new TransactionsDto();
-			transactionsHistoryDto.setAmountSpent(f.getAmountSpent());
+
 			transactionsHistoryDto.setCurrency(f.getCurrency());
 			transactionsHistoryDto.setDescription(f.getDescription());
 			transactionsHistoryDto.setDate(f.getTransactionDate());
 			transactionsHistoryDto.setTransactionId(f.getTransactionId());
 			transactionsHistoryDto.setLastTransactionType(f.getLastTransactionType());
+			if (TraxnType.CREDIT == f.getLastTransactionType())
+				transactionsHistoryDto.setCreditedAmount(f.getAmountAdded());
+			else
+				transactionsHistoryDto.setDebitedAmount(f.getAmountSpent());
 			transactionsHistoryDto.setUserId(f.getUserId());
 			return transactionsHistoryDto;
 
@@ -187,8 +191,8 @@ public class TransactionsServiceImpl implements TransactionsService {
 			double balanceAmount, TraxnType traxnType, Date trxnDate, Account userAccount) throws TransactionException {
 		String transactionId = prepareTraxnId(user);
 		try {
-			CreateOrUpdateAccount(currency, description, user, balanceAmount, traxnType, transactionId, trxnDate,
-					userAccount);
+			userAccount = CreateOrUpdateAccount(currency, description, user, balanceAmount, traxnType, transactionId,
+					trxnDate, userAccount);
 			if (userAccount != null) {
 				userAccount = accountRepository.saveAndFlush(userAccount);
 			}
@@ -198,9 +202,12 @@ public class TransactionsServiceImpl implements TransactionsService {
 			throw new TransactionException(e.getMessage());
 
 		}
-
+		/**
+		 * update transaction history with purchase amount, balance amount after
+		 * deducting purchase amount and other details
+		 */
 		TransactionHistory transactionHistory = prepareTraxnHistory(currency, description, user, purchaseamount,
-				traxnType, transactionId, trxnDate, balanceAmount);
+				traxnType, transactionId, trxnDate, balanceAmount, userAccount);
 		if (transactionHistory != null) {
 			try {
 				transactionHistoryRepository.save(transactionHistory);
@@ -224,19 +231,25 @@ public class TransactionsServiceImpl implements TransactionsService {
 
 	@Override
 	public TransactionHistory prepareTraxnHistory(Currency currency, String description, EpayUser user,
-			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount) {
+			Double purchaseamount, TraxnType traxnType, String transactionId, Date trxnDate, double balanceAmount,
+			Account userAccount) {
 		TransactionHistory transactionHistory = new TransactionHistory();
 		transactionHistory.setAmountSpent(purchaseamount);
-		transactionHistory.setBalance(balanceAmount);
 		transactionHistory.setCurrency(currency);
 		transactionHistory.setDescription(description);
 		if (trxnDate == null)
 			trxnDate = new Date();
 		transactionHistory.setTransactionDate(trxnDate);
-		if (TraxnType.CREDIT == traxnType)
+		if (TraxnType.CREDIT == traxnType) {
 			transactionHistory.setLastTransactionType(TraxnType.CREDIT);
-		else
+			if (userAccount != null && userAccount.getBalanceAmount() != null)
+				transactionHistory.setBalance(userAccount.getBalanceAmount());
+			transactionHistory.setAmountAdded(balanceAmount);
+
+		} else {
 			transactionHistory.setLastTransactionType(TraxnType.DEBIT);
+			transactionHistory.setBalance(balanceAmount);
+		}
 		transactionHistory.setUserId(user.getId());
 		transactionHistory.setTransactionId(transactionId);
 		return transactionHistory;

@@ -26,7 +26,6 @@ public class TransactionHistory implements Serializable {
 		DEBIT, CREDIT;
 	}
 
-
 	public Long getId() {
 		return id;
 	}
@@ -46,7 +45,8 @@ public class TransactionHistory implements Serializable {
 	private Currency currency;
 
 	private Double amountSpent;
-	
+
+	private Double amountAdded;
 
 	public String getDescription() {
 		return description;
@@ -110,6 +110,14 @@ public class TransactionHistory implements Serializable {
 
 	public void setBalance(Double balance) {
 		this.balance = balance;
+	}
+
+	public Double getAmountAdded() {
+		return amountAdded;
+	}
+
+	public void setAmountAdded(Double amountAdded) {
+		this.amountAdded = amountAdded;
 	}
 
 	private Date transactionDate;

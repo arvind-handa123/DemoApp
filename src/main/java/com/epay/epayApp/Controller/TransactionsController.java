@@ -98,7 +98,7 @@ public class TransactionsController {
 		}
 		TransactionsStatusDto transactionStatusDto = null;
 		if (user != null && transactionsRequest != null) {
-			transactionStatusDto = transactionsService.purchase(user, transactionsRequest.getAmountSpent(),
+			transactionStatusDto = transactionsService.purchase(user, transactionsRequest.getDebitedAmount(),
 					transactionsRequest.getCurrency(), transactionsRequest.getDescription(),
 					transactionsRequest.getDate());
 			return new ResponseEntity<>(transactionStatusDto, HttpStatus.OK);
@@ -127,8 +127,6 @@ public class TransactionsController {
 		}
 		return new ResponseEntity<>(transactionsHistoryDtoList, HttpStatus.OK);
 	}
-
-	
 
 	/**
 	 * 

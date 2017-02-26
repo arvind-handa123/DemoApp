@@ -146,7 +146,7 @@ public class LoginServiceImpl implements LoginService {
 			try {
 				TransactionHistory transactionHistory = transactionsService.prepareTraxnHistory(account.getCurrency(),
 						account.getDescription(), user, 0.0, TraxnType.CREDIT, account.getTransactionId(), new Date(),
-						account.getBalanceAmount());
+						account.getBalanceAmount(), account);
 				if (transactionHistory != null) {
 					transactionHistoryRepository.save(transactionHistory);
 				}

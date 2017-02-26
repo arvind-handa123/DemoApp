@@ -37,12 +37,12 @@ public class TransactionsDto implements Serializable {
 		this.currency = currency;
 	}
 
-	public Double getAmountSpent() {
-		return amountSpent;
-	}
 
-	public void setAmountSpent(Double amountSpent) {
-		this.amountSpent = amountSpent;
+	@Override
+	public String toString() {
+		return "TransactionsDto [date=" + date + ", description=" + description + ", creditedAmount=" + creditedAmount
+				+ ", debitedAmount=" + debitedAmount + ", currency=" + currency + ", lastTransactionType="
+				+ lastTransactionType + ", transactionId=" + transactionId + ", userId=" + userId + "]";
 	}
 
 	public String getTransactionId() {
@@ -54,12 +54,7 @@ public class TransactionsDto implements Serializable {
 	}
 
 
-	@Override
-	public String toString() {
-		return "TransactionsDto [date=" + date + ", description=" + description + ", amountSpent=" + amountSpent
-				+ ", currency=" + currency + ", lastTransactionType=" + lastTransactionType + ", transactionId="
-				+ transactionId + ", userId=" + userId + "]";
-	}
+	
 
 	public TraxnType getLastTransactionType() {
 		return lastTransactionType;
@@ -77,7 +72,24 @@ public class TransactionsDto implements Serializable {
 		this.userId = userId;
 	}
 
-	private Double amountSpent;
+	public Double getCreditedAmount() {
+		return creditedAmount;
+	}
+
+	public void setCreditedAmount(Double creditedAmount) {
+		this.creditedAmount = creditedAmount;
+	}
+
+	public Double getDebitedAmount() {
+		return debitedAmount;
+	}
+
+	public void setDebitedAmount(Double debitedAmount) {
+		this.debitedAmount = debitedAmount;
+	}
+
+	private Double creditedAmount;
+	private Double debitedAmount;
 	private Currency currency;
 	private TraxnType lastTransactionType;
 	private String transactionId;
