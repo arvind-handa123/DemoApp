@@ -39,7 +39,8 @@ The API will have 6 endpoints and will communicate JSON with at least the follow
     hibernate.jdbc.batch_size=100   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
 ```    
-    Other than these, below are some of the configurable constant/values which needs to be loaded in db(Under Config table). Default values are hardcoded , which will be loaded in case configurable values are not found in db/table, such as., 
+    Other than these, below are some of the configurable constant/values which needs to be loaded in db(Under DbConfig table). 
+    Although default values are hardcoded , which will be loaded in case configurable values are not found in db/table, such as., 
     
 ```java        
          PRESET_AMOUNT: 99.0
