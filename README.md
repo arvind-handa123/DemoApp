@@ -15,16 +15,18 @@ The API will have 6 endpoints and will communicate JSON with at least the follow
 
 * /recharge/wallet - a POST request that will accept an Authorization header (with the token value output from /login),  input parameter  content representing amount to be added, with currency and other optional detail like coupan code, remark etc.
 
-# Technology stack
 
-* Used Java and related framework (JPA,Spring,Hibernate,Spring Rest etc) and postgres for the database. 
-* Used Memcache for caching frequently used data, Application build using Tomcat server, However any other server can also be used.
-
-the backend will run as a standalone java process. 
 
 # Tutorial
 
-* Setting Database Configuration
+### Technology Used
+
++ Used Java and related framework (JPA,Spring,Hibernate,Spring Rest etc) and postgres for the database. 
++ Used Memcache for caching frequently used data, Application build using Tomcat server, However any other server can also be used.
++ Databse is configurable, just add maven dependency of db in pom and db configuration in persistence.properties file, you are ready to go. 
++ The backend will run as a standalone java process. 
+
+### Setting Database Configuration
   + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
 ```java
     jdbc.username=abc   
@@ -37,7 +39,8 @@ the backend will run as a standalone java process.
     hibernate.jdbc.batch_size=100   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
 ```    
-    Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
+    Other than these, below are some of the configurable constant/values which needs to be loaded in db(Under DbConfig table). 
+    Although default values are hardcoded , which will be loaded in case configurable values are not found in db/table, such as., 
     
 ```java        
          PRESET_AMOUNT: 99.0
@@ -49,13 +52,15 @@ the backend will run as a standalone java process.
  ```
     
   
-* Configuring Memcache
+### Configuring Memcache
   + install and start memcache server, the memcache host and port need to be entered in memcached.properties file, as shown below.              MEMCACHED_SERVERS=localhost:11211
   
-*  API's
+###  API's
+
   + Request
   ```java
-    curl -X POST -H "Cache-Control: no-cache" -H "Postman-Token: c43da818-b4aa-1b39-31ae-e63e7d4783d4" "{{host}}/epayApp/api/v1/login"
+    POST /epayApp/api/v1/login HTTP/1.1
+    Host: localhost:8080
   ```
     API is responsible for creating a new user, and adding some preset balance to the user Account. It simply returns the token which       can be used in subsequent API calls for retrieving user details and other info. sample token response is mentioned below.
  
@@ -68,7 +73,10 @@ the backend will run as a standalone java process.
 ```  
   + Request
 ```java    
-    curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL:                  1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 28288cf1-001d-78b3-4c4b-48491d8234a0" "{{host}}/epayApp/api/v1/balance"
+   GET /epayApp/api/v1/balance HTTP/1.1
+   Host: localhost:8080
+   AUTH_ACCESS_TOKEN: v+/03DCjBWs8GUP/JVyMPvbwcUrj/ojGcY2KP1mcZJikWF/V6ZJSvtEy6DP2jy+2
+   TIME_OF_CALL: 1441177929934000
 ```
     A GET request that will accept an Authorization header (with the token value output from /login) and  will return the current           balance along with the currency code and other info. sample response is shown below.
     
@@ -83,12 +91,10 @@ the backend will run as a standalone java process.
  ```   
   + Request
 ```java
-  curl -X POST -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 1224fa94-bfe4-e288-fd80-cfbe19ff2f84" -d '{"date":"" ,
-  "description":"1st Transaction",
-  "amountSpent": 50.0,
-  "currency":"inr"
-  }' "{{host}}/epayApp/api/v1/spend?payload=            {%22date%22:%22%22%2C%22description%22:%22Transaction%22%2C%20%22amountSpent%22:%2050.0%2C%20%22currency%22:0%20}"
-  ```
+POST /epayApp/api/v1/spend?payload={"date":"123456782141","description":"test Transaction", "debitedAmount": 101.0, "currency":0 } HTTP/1.1
+Host: localhost:8080
+AUTH_ACCESS_TOKEN: v+/03DCjBWs8GUP/JVyMPvbwcUrj/ojGcY2KP1mcZJikWF/V6ZJSvtEy6DP2jy+2
+TIME_OF_CALL: 1441177929934000  ```
 
     A POST request that will accept an Authorization header (with the token value output from /login), JSON payload content representing one spend transaction with the transaction date, description, amount, currency etc. It will simply return status of Your transaction with transaaction Id(In case of successful transaction).
 
@@ -112,7 +118,10 @@ the backend will run as a standalone java process.
 ```
   + Request
 ```java
-      curl -X GET -H "AUTH_ACCESS_TOKEN: 1tNOYF9qeyAqeuk2RRuZPMKvwnR3skCK6y/Vu9/3UGNzi/+Ezob1t6YLCtc46FJs" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 75c9f06c-4503-35a3-4f2c-a03dddd87ee2" "{{host}}/epayApp/api/v1/transactions"
+    GET /epayApp/api/v1/transactions HTTP/1.1
+    Host: localhost:8080
+    AUTH_ACCESS_TOKEN: v+/03DCjBWs8GUP/JVyMPvbwcUrj/ojGcY2KP1mcZJikWF/V6ZJSvtEy6DP2jy+2
+    TIME_OF_CALL: 1441177929934000
 ```
     API takes access token as input in header and returns list of transaction done on a particular account by user or system.
     
@@ -141,7 +150,11 @@ the backend will run as a standalone java process.
 ```
   + Request
 ```java
-      curl -X POST -H "AUTH_ACCESS_TOKEN: eVcnHTqMilOI2tC1PN4GaGauAF6ZyCEhRlgONmrLabShRf7NJGgsPQW9lXaCjA19" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: bd0e392c-c551-59c9-cdf5-c2d64543f819" "{{host}}/epayApp/api/v1/update/profile?firstName=ABC&lastName=PQR&email=abcpqr@gmail.com&mobileNumber=9876543210&gender=male"
+      POST /epayApp/api/v1/update/profile?firstName=asad&amp;lastName=ali&amp;email=asadali@gmail.com&amp;mobileNumber=123456789&amp;
+      gender=male HTTP/1.1
+      Host: localhost:8080
+      AUTH_ACCESS_TOKEN: v+/03DCjBWs8GUP/JVyMPvbwcUrj/ojGcY2KP1mcZJikWF/V6ZJSvtEy6DP2jy+2
+      TIME_OF_CALL: 1441177929934000
 ```
      Takes user details as input with access token in header and updates user deatils in db. returns the dto of saved information of particular user.
  
@@ -157,7 +170,10 @@ the backend will run as a standalone java process.
 ```
   + Request
 ```java
-      curl -X POST -H "AUTH_ACCESS_TOKEN: JLlxnrfCJ8Y4ibkY5aVlLs2xWVkmVtJGCqrxAJlddJMJ0LN6QlJVkP//VRcVBNsz" -H "TIME_OF_CALL: 1441177929934000" -H "Cache-Control: no-cache" -H "Postman-Token: 934da843-00e6-d986-00ba-a13103928e1e" "{{host}}/epayApp/api/v1/recharge/wallet?amount=100&currency=inr&email=abcpqr@gmail.com&remark=test"
+      POST /epayApp/api/v1/recharge/wallet?amount=100&amp;currency=inr HTTP/1.1
+      Host: localhost:8080
+      AUTH_ACCESS_TOKEN: v+/03DCjBWs8GUP/JVyMPvbwcUrj/ojGcY2KP1mcZJikWF/V6ZJSvtEy6DP2jy+2
+      TIME_OF_CALL: 1441177929934000
 ```
       API is responsible for adding amount to wallet, takes amount and currency as mandatory parameter and returns the status of transaction similar to /spend api
   + Response
