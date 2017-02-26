@@ -3,6 +3,7 @@ package com.epay.epayApp.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,18 +75,32 @@ public class TransactionsServiceImpl implements TransactionsService {
 		 * fetch list of transaction for the user from db and prepare dto
 		 */
 		List<TransactionHistory> transactions = transactionHistoryRepository.findByUserId(user.getId());
-		List<TransactionsDto> transactionsHistoryDtosList = new ArrayList<TransactionsDto>(transactions.size());
-		for (TransactionHistory transaction : transactions) {
+		List<TransactionsDto> transactionsHistoryDtosList = transactions.stream().map(f -> {
 			TransactionsDto transactionsHistoryDto = new TransactionsDto();
-			transactionsHistoryDto.setAmountSpent(transaction.getAmountSpent());
-			transactionsHistoryDto.setCurrency(transaction.getCurrency());
-			transactionsHistoryDto.setDescription(transaction.getDescription());
-			transactionsHistoryDto.setDate(transaction.getTransactionDate());
-			transactionsHistoryDto.setTransactionId(transaction.getTransactionId());
-			transactionsHistoryDto.setLastTransactionType(transaction.getLastTransactionType());
-			transactionsHistoryDto.setUserId(transaction.getUserId());
-			transactionsHistoryDtosList.add(transactionsHistoryDto);
-		}
+			transactionsHistoryDto.setAmountSpent(f.getAmountSpent());
+			transactionsHistoryDto.setCurrency(f.getCurrency());
+			transactionsHistoryDto.setDescription(f.getDescription());
+			transactionsHistoryDto.setDate(f.getTransactionDate());
+			transactionsHistoryDto.setTransactionId(f.getTransactionId());
+			transactionsHistoryDto.setLastTransactionType(f.getLastTransactionType());
+			transactionsHistoryDto.setUserId(f.getUserId());
+			return transactionsHistoryDto;
+
+		}).collect(Collectors.toList());
+		/*
+		 * for (TransactionHistory transaction : transactions) { TransactionsDto
+		 * transactionsHistoryDto = new TransactionsDto();
+		 * transactionsHistoryDto.setAmountSpent(transaction.getAmountSpent());
+		 * transactionsHistoryDto.setCurrency(transaction.getCurrency());
+		 * transactionsHistoryDto.setDescription(transaction.getDescription());
+		 * transactionsHistoryDto.setDate(transaction.getTransactionDate());
+		 * transactionsHistoryDto
+		 * .setTransactionId(transaction.getTransactionId());
+		 * transactionsHistoryDto
+		 * .setLastTransactionType(transaction.getLastTransactionType());
+		 * transactionsHistoryDto.setUserId(transaction.getUserId());
+		 * transactionsHistoryDtosList.add(transactionsHistoryDto); }
+		 */
 
 		return transactionsHistoryDtosList;
 	}
