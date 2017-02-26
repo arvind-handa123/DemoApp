@@ -15,14 +15,16 @@ The API will have 6 endpoints and will communicate JSON with at least the follow
 
 * /recharge/wallet - a POST request that will accept an Authorization header (with the token value output from /login),  input parameter  content representing amount to be added, with currency and other optional detail like coupan code, remark etc.
 
-# Technology stack
 
-* Used Java and related framework (JPA,Spring,Hibernate,Spring Rest etc) and postgres for the database. 
-* Used Memcache for caching frequently used data, Application build using Tomcat server, However any other server can also be used.
-
-the backend will run as a standalone java process. 
 
 # Tutorial
+
+### Technology Used
+
++ Used Java and related framework (JPA,Spring,Hibernate,Spring Rest etc) and postgres for the database. 
++ Used Memcache for caching frequently used data, Application build using Tomcat server, However any other server can also be used.
++ Databse is configurable, just add maven dependency of db in pom and db configuration in persistence.properties file, you are ready to go. 
++ The backend will run as a standalone java process. 
 
 * Setting Database Configuration
   + Create a db in postgres, and enter the db details like userName, password and db name in persistence.properties file as shown below
@@ -37,7 +39,7 @@ the backend will run as a standalone java process.
     hibernate.jdbc.batch_size=100   
     jdbc.database.platform=org.hibernate.dialect.PostgreSQLDialect  
 ```    
-    Other than these below are some of the configurable constant/values which needs to be loaded in db. Default values are hardcoded , which will be loaded in case configurable values are not found in db, such as., 
+    Other than these, below are some of the configurable constant/values which needs to be loaded in db(Under Config table). Default values are hardcoded , which will be loaded in case configurable values are not found in db/table, such as., 
     
 ```java        
          PRESET_AMOUNT: 99.0
